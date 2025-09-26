@@ -91,7 +91,6 @@ Set environment variables or use `.env` file:
 5. Messages are persisted and distributed concurrently across all brokers
 6. On leader failure, new leader is elected automatically
 
-## Development
 
 ### File Structure
 
