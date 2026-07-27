@@ -5,8 +5,10 @@ ifeq ($(SANITIZE),1)
 	CXXFLAGS += -fsanitize=thread
 endif
 
-broker: src/broker/main.cpp
-	$(CXX) $(CXXFLAGS) -o broker src/broker/main.cpp
+BROKER_SRCS := src/broker/main.cpp src/broker/broker.cpp
+
+broker: $(BROKER_SRCS)
+	$(CXX) $(CXXFLAGS) -o broker $(BROKER_SRCS)
 
 clean:
 	rm -f broker broker_nosan
