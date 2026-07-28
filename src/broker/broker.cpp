@@ -1,11 +1,14 @@
 #include "broker.h"
 
+#include "framing/frame.h"
+
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
 #include <iostream>
+#include <vector>
 
 Broker::Broker(int port) : port(port) {}
 
@@ -19,10 +22,13 @@ int Broker::run() {
         int client_fd =
             accept(listen_fd, reinterpret_cast<sockaddr*>(&client_addr), &len);
 
-        char buffer[1024];
-        ssize_t n = recv(client_fd, buffer, sizeof(buffer), 0);
-        if (n > 0) {
-            send(client_fd, buffer, static_cast<size_t>(n), 0);
+        std::vector<char> pending;
+        while (true) {
+            std::vector<char> payload;
+            if (!read_frame(client_fd, pending, payload)) {
+                break;
+            }
+            write_frame(client_fd, payload);
         }
         close(client_fd);
     }
